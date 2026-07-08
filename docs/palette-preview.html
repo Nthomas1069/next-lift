@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Next Lift Palette Preview</title>
+  <style>
+    :root {
+      --radius: 14px;
+      --radius-sm: 10px;
+      --space-1: 8px;
+      --space-2: 12px;
+      --space-3: 16px;
+      --space-4: 24px;
+      --space-5: 32px;
+      --font: Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+    }
+
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: var(--font);
+      background: #0a0c0f;
+      color: #e8edf2;
+      line-height: 1.4;
+    }
+
+    .wrap {
+      width: min(1200px, 92vw);
+      margin: 40px auto 64px;
+    }
+
+    h1 { margin: 0 0 10px; font-size: 30px; letter-spacing: 0.3px; }
+    p.lead { margin: 0 0 28px; color: #acb7c3; }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(290px, 1fr));
+      gap: 18px;
+    }
+
+    .theme {
+      border-radius: var(--radius);
+      padding: var(--space-4);
+      border: 1px solid var(--border);
+      background: linear-gradient(180deg, var(--bg-elev), var(--bg));
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.28);
+      min-height: 510px;
+    }
+
+    .theme h2 { margin: 0 0 6px; font-size: 18px; }
+    .theme .desc { margin: 0 0 16px; color: var(--muted); font-size: 13px; }
+
+    .swatches {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 8px;
+      margin-bottom: 16px;
+    }
+    .swatch {
+      border-radius: var(--radius-sm);
+      height: 28px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+    .chart-lines {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 8px;
+      margin-bottom: 16px;
+    }
+    .line-swatch {
+      border-radius: 999px;
+      height: 8px;
+      border: 1px solid rgba(255, 255, 255, 0.10);
+    }
+
+    .phone {
+      border: 1px solid var(--border);
+      border-radius: 22px;
+      background: var(--bg);
+      padding: 14px;
+    }
+    .top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+      color: var(--text);
+      font-size: 14px;
+    }
+
+    .card {
+      background: var(--bg-elev);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 12px;
+      margin-bottom: 10px;
+    }
+    .kicker { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.7px; }
+    .value { font-size: 20px; margin-top: 2px; color: var(--text); }
+    .trend { color: var(--accent); font-size: 12px; margin-top: 4px; }
+
+    .row { display: flex; gap: 8px; margin-top: 10px; }
+    .pill {
+      border-radius: 999px;
+      padding: 6px 10px;
+      font-size: 11px;
+      border: 1px solid var(--border);
+      color: var(--muted);
+      background: rgba(255, 255, 255, 0.02);
+    }
+    .pill.active {
+      color: var(--bg);
+      background: var(--accent);
+      border-color: var(--accent);
+      font-weight: 600;
+    }
+
+    .active-set {
+      border-radius: var(--radius-sm);
+      border: 1.5px solid var(--accent);
+      background: var(--bg-elev);
+      padding: 10px;
+      margin-top: 12px;
+      box-shadow: 0 0 0 1px rgba(255,255,255,0.02), 0 12px 22px var(--accent-glow);
+    }
+    .active-set .title { color: var(--text); font-size: 13px; margin-bottom: 6px; }
+    .fields { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; }
+    .field {
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 8px;
+      color: var(--muted);
+      font-size: 11px;
+      min-height: 38px;
+      background: rgba(255,255,255,0.01);
+    }
+
+    .btn-row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 10px; }
+    .btn {
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      font-size: 12px;
+      padding: 10px 8px;
+      color: var(--text);
+      background: transparent;
+      text-align: center;
+    }
+    .btn.primary {
+      background: var(--accent);
+      color: var(--bg);
+      border-color: var(--accent);
+      font-weight: 600;
+    }
+
+    .note {
+      margin-top: 20px;
+      color: #93a2b2;
+      font-size: 12px;
+    }
+
+    .slate-lime {
+      --bg: #111418;
+      --bg-elev: #171b21;
+      --text: #edf2f7;
+      --muted: #9aa7b6;
+      --border: #2a313a;
+      --accent: #b7ff3c;
+      --accent-glow: rgba(183, 255, 60, 0.20);
+      --sw1: #111418; --sw2: #171b21; --sw3: #2a313a; --sw4: #edf2f7; --sw5: #b7ff3c;
+      --ln1: #b7ff3c; --ln2: #57d9ff; --ln3: #ffc857; --ln4: #ff7a99; --ln5: #c3a6ff;
+    }
+    .charcoal-blue {
+      --bg: #121419;
+      --bg-elev: #1a1e27;
+      --text: #eaf0f7;
+      --muted: #9eacbc;
+      --border: #2b3442;
+      --accent: #6bb6ff;
+      --accent-glow: rgba(107, 182, 255, 0.20);
+      --sw1: #121419; --sw2: #1a1e27; --sw3: #2b3442; --sw4: #eaf0f7; --sw5: #6bb6ff;
+      --ln1: #6bb6ff; --ln2: #5be7c4; --ln3: #ffd166; --ln4: #ff8fa3; --ln5: #b8a1ff;
+    }
+    .graphite-teal {
+      --bg: #111517;
+      --bg-elev: #172022;
+      --text: #e7f1f2;
+      --muted: #9eb2b4;
+      --border: #2a3a3d;
+      --accent: #3ad7c8;
+      --accent-glow: rgba(58, 215, 200, 0.22);
+      --sw1: #111517; --sw2: #172022; --sw3: #2a3a3d; --sw4: #e7f1f2; --sw5: #3ad7c8;
+      --ln1: #3ad7c8; --ln2: #7eb6ff; --ln3: #ffcc66; --ln4: #ff8c9f; --ln5: #c5b3ff;
+    }
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <h1>Next Lift Palette Exploration</h1>
+    <p class="lead">Three user-selectable, dark-first palettes with mock card and active-set styling plus chart line colors for quick visual comparison.</p>
+
+    <section class="grid">
+      <article class="theme slate-lime">
+        <h2>Slate + Electric Lime</h2>
+        <p class="desc">High-contrast neutrals with energetic accent for active state emphasis.</p>
+        <div class="swatches">
+          <div class="swatch" style="background: var(--sw1)"></div>
+          <div class="swatch" style="background: var(--sw2)"></div>
+          <div class="swatch" style="background: var(--sw3)"></div>
+          <div class="swatch" style="background: var(--sw4)"></div>
+          <div class="swatch" style="background: var(--sw5)"></div>
+        </div>
+        <div class="chart-lines">
+          <div class="line-swatch" style="background: var(--ln1)"></div>
+          <div class="line-swatch" style="background: var(--ln2)"></div>
+          <div class="line-swatch" style="background: var(--ln3)"></div>
+          <div class="line-swatch" style="background: var(--ln4)"></div>
+          <div class="line-swatch" style="background: var(--ln5)"></div>
+        </div>
+        <div class="phone">
+          <div class="top"><span>Dashboard</span><span>Today</span></div>
+          <div class="card">
+            <div class="kicker">Bodyweight</div>
+            <div class="value">191.8 lb</div>
+            <div class="trend">Trend: down</div>
+          </div>
+          <div class="row">
+            <span class="pill active">Volume</span><span class="pill">Time</span><span class="pill">Reps</span>
+          </div>
+          <div class="active-set">
+            <div class="title">Bench Press - Set 3</div>
+            <div class="fields"><div class="field">Weight</div><div class="field">Reps</div></div>
+            <div class="btn-row"><div class="btn">Start Next</div><div class="btn primary">Complete</div></div>
+          </div>
+        </div>
+      </article>
+
+      <article class="theme charcoal-blue">
+        <h2>Charcoal + Cool Blue</h2>
+        <p class="desc">Calmer technical tone with lower visual aggression and clean focus.</p>
+        <div class="swatches">
+          <div class="swatch" style="background: var(--sw1)"></div>
+          <div class="swatch" style="background: var(--sw2)"></div>
+          <div class="swatch" style="background: var(--sw3)"></div>
+          <div class="swatch" style="background: var(--sw4)"></div>
+          <div class="swatch" style="background: var(--sw5)"></div>
+        </div>
+        <div class="chart-lines">
+          <div class="line-swatch" style="background: var(--ln1)"></div>
+          <div class="line-swatch" style="background: var(--ln2)"></div>
+          <div class="line-swatch" style="background: var(--ln3)"></div>
+          <div class="line-swatch" style="background: var(--ln4)"></div>
+          <div class="line-swatch" style="background: var(--ln5)"></div>
+        </div>
+        <div class="phone">
+          <div class="top"><span>Dashboard</span><span>Today</span></div>
+          <div class="card">
+            <div class="kicker">Bodyweight</div>
+            <div class="value">191.8 lb</div>
+            <div class="trend">Trend: down</div>
+          </div>
+          <div class="row">
+            <span class="pill active">Volume</span><span class="pill">Time</span><span class="pill">Reps</span>
+          </div>
+          <div class="active-set">
+            <div class="title">Bench Press - Set 3</div>
+            <div class="fields"><div class="field">Weight</div><div class="field">Reps</div></div>
+            <div class="btn-row"><div class="btn">Start Next</div><div class="btn primary">Complete</div></div>
+          </div>
+        </div>
+      </article>
+
+      <article class="theme graphite-teal">
+        <h2>Graphite + Teal (Default)</h2>
+        <p class="desc">Balanced modern look with a cleaner health-tech accent temperature.</p>
+        <div class="swatches">
+          <div class="swatch" style="background: var(--sw1)"></div>
+          <div class="swatch" style="background: var(--sw2)"></div>
+          <div class="swatch" style="background: var(--sw3)"></div>
+          <div class="swatch" style="background: var(--sw4)"></div>
+          <div class="swatch" style="background: var(--sw5)"></div>
+        </div>
+        <div class="chart-lines">
+          <div class="line-swatch" style="background: var(--ln1)"></div>
+          <div class="line-swatch" style="background: var(--ln2)"></div>
+          <div class="line-swatch" style="background: var(--ln3)"></div>
+          <div class="line-swatch" style="background: var(--ln4)"></div>
+          <div class="line-swatch" style="background: var(--ln5)"></div>
+        </div>
+        <div class="phone">
+          <div class="top"><span>Dashboard</span><span>Today</span></div>
+          <div class="card">
+            <div class="kicker">Bodyweight</div>
+            <div class="value">191.8 lb</div>
+            <div class="trend">Trend: down</div>
+          </div>
+          <div class="row">
+            <span class="pill active">Volume</span><span class="pill">Time</span><span class="pill">Reps</span>
+          </div>
+          <div class="active-set">
+            <div class="title">Bench Press - Set 3</div>
+            <div class="fields"><div class="field">Weight</div><div class="field">Reps</div></div>
+            <div class="btn-row"><div class="btn">Start Next</div><div class="btn primary">Complete</div></div>
+          </div>
+        </div>
+      </article>
+
+    </section>
+
+    <p class="note">
+      File: <code>docs/palette-preview.html</code>. Open in browser and choose the direction you want to lock for design tokens.
+    </p>
+  </main>
+</body>
+</html>
