@@ -101,7 +101,7 @@ During execution:
 - `Settings` (units, reminders, cues, defaults)
 
 Settings also includes:
-- Theme selection with three options (`slate_lime`, `charcoal_blue`, `graphite_teal`).
+- Theme selection with four options (`slate_lime`, `charcoal_blue`, `graphite_teal`, `crimson_silver`).
 - Default selected theme is `graphite_teal`.
 
 ## 7. Feature Rules (Cross-Cutting)

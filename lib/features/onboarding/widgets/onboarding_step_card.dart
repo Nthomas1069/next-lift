@@ -21,8 +21,8 @@ class OnboardingStepCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final typeLabel = switch (type) {
-      OnboardingCardType.explanation => "Feature",
-      OnboardingCardType.preference => "Preference",
+      OnboardingCardType.explanation => "Getting Started",
+      OnboardingCardType.preference => "Preferences",
     };
 
     return Material(

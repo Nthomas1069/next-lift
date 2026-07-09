@@ -189,6 +189,16 @@ line.mono:   #6BB6FF #5EA2E3 #518EC8 #457AAD #386692 #2C5377 #1F3F5B #132B40
 point.mono:  #93CBFF #84B8EB #75A4D8 #6791C4 #587EB0 #4A6A9D #3B5789 #2D4375
 ```
 
+### 5.4 `crimson_silver`
+```text
+line.vivid:  #FF1744 #C0C7D2 #FF8B6B #7DE8C8 #D6B0FF #FFC36A #9FB4FF #FF5570
+point.vivid: #FF7A91 #D3D8DF #FFAA90 #A2EFD8 #E3C8FF #FFD48E #BAC9FF #FF8D9A
+line.calm:   #BF5D6D #969CA7 #C48C7D #7FB4A6 #A992C2 #C6A077 #8EA1CC #C06D79
+point.calm:  #C97C88 #A7ADB7 #D3A195 #97C2B8 #B8A7CC #D0B28F #A5B3D6 #CC8791
+line.mono:   #FF1744 #E3153D #C71235 #AB102E #900D27 #740B1F #580818 #3D0611
+point.mono:  #FF7A91 #F06B84 #E25D77 #D34E69 #C53F5C #B6304F #A82242 #991335
+```
+
 ## 6. Settings Contract
 - `UserSettings.themeId` selects one theme token bundle.
 - Each chart config includes optional `paletteMode` (`vivid|calm|mono`), default `vivid`.
@@ -204,6 +214,6 @@ point.mono:  #93CBFF #84B8EB #75A4D8 #6791C4 #587EB0 #4A6A9D #3B5789 #2D4375
 ## 8. Implementation Order
 1. Add token classes and theme registry.
 2. Implement `graphite_teal` as default registry entry.
-3. Add `slate_lime` and `charcoal_blue`.
+3. Add `slate_lime`, `charcoal_blue`, and `crimson_silver`.
 4. Wire `themeId` selection in settings.
 5. Implement chart palette selection and deterministic assignment logic.

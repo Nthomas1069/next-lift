@@ -19,7 +19,7 @@ This document is governed by final V1 decision overrides in `docs/specs/decision
 - `weightUnit` (`lb|kg`)
 - `weighInReminderCadence` (`off|daily|weekly|monthly`)
 - `defaultMetricVisibility` (set of metric keys)
-- `themeId` (`slate_lime|charcoal_blue|graphite_teal`)
+- `themeId` (`slate_lime|charcoal_blue|graphite_teal|crimson_silver`)
 - `themeId` default: `graphite_teal`
 - `cueSoundEnabled` (bool)
 - `cueVisualEnabled` (bool)

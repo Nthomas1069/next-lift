@@ -242,4 +242,5 @@ enum AppThemeId {
   graphiteTeal,
   slateLime,
   charcoalBlue,
+  crimsonSilver,
 }

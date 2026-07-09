@@ -1,7 +1,7 @@
 import "package:flutter/material.dart";
 import "package:flutter_riverpod/flutter_riverpod.dart";
 
-import "../../settings/in_memory_user_settings_repository.dart";
+import "../../settings/shared_prefs_user_settings_repository.dart";
 import "../../settings/user_settings.dart";
 import "../tokens/app_theme_tokens.dart";
 import "../tokens/theme_registry.dart";
@@ -9,7 +9,7 @@ import "app_theme_data.dart";
 import "theme_controller.dart";
 
 final userSettingsRepositoryProvider = Provider<UserSettingsRepository>((ref) {
-  return InMemoryUserSettingsRepository();
+  return SharedPrefsUserSettingsRepository();
 });
 
 final themeControllerProvider = ChangeNotifierProvider<ThemeController>((ref) {
@@ -18,7 +18,7 @@ final themeControllerProvider = ChangeNotifierProvider<ThemeController>((ref) {
 });
 
 final themeControllerHydrationProvider = FutureProvider<void>((ref) async {
-  await ref.watch(themeControllerProvider).hydrate();
+  await ref.read(themeControllerProvider).hydrate();
 });
 
 final appThemeIdProvider = Provider<AppThemeId>((ref) {

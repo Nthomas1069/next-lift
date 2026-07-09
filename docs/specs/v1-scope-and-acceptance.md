@@ -43,10 +43,10 @@ V1 is complete when a user can:
 - Completion commits derived stats.
 - Dashboard reflects new session results on return.
 - Editing completed-set values triggers immediate visible stat recalculation and persisted update.
-- Multi-series chart lines remain distinguishable in all three supported themes.
+- Multi-series chart lines remain distinguishable in all four supported themes.
 
 ### 2.6 Theme Settings
-- User can choose one of three app themes (`slate_lime`, `charcoal_blue`, `graphite_teal`).
+- User can choose one of four app themes (`slate_lime`, `charcoal_blue`, `graphite_teal`, `crimson_silver`).
 - Theme change applies globally without restart.
 - Selected theme persists across app restarts.
 

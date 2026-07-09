@@ -48,10 +48,11 @@ Additional lock:
 - Drag-down reorder is not supported in V1. Reordering is upward only.
 
 ### 2.6 Theme Selection and Statistics Chart Colors
-- V1 ships with three selectable dark-first themes:
+- V1 ships with four selectable dark-first themes:
   - `slate_lime`
   - `charcoal_blue`
   - `graphite_teal`
+  - `crimson_silver`
 - Default theme is `graphite_teal`.
 - User can change theme in settings at any time.
 - Theme change applies globally and immediately.
@@ -68,6 +69,7 @@ Additional lock:
   - `slate_lime`: `#B7FF3C`, `#57D9FF`, `#FFC857`, `#FF7A99`, `#C3A6FF`
   - `charcoal_blue`: `#6BB6FF`, `#5BE7C4`, `#FFD166`, `#FF8FA3`, `#B8A1FF`
   - `graphite_teal`: `#3AD7C8`, `#7EB6FF`, `#FFCC66`, `#FF8C9F`, `#C5B3FF`
+  - `crimson_silver`: `#FF1744`, `#C0C7D2`, `#FF8B6B`, `#7DE8C8`, `#D6B0FF`
 
 ## 3. Runtime Event Lock Updates
 - `completeActiveSet()` must check `hasNextSet` before arming global rest.

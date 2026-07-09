@@ -91,5 +91,6 @@ String _labelForTheme(AppThemeId id) {
     AppThemeId.graphiteTeal => "Graphite Teal",
     AppThemeId.slateLime => "Slate Lime",
     AppThemeId.charcoalBlue => "Charcoal Blue",
+    AppThemeId.crimsonSilver => "Crimson Silver",
   };
 }

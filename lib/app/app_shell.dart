@@ -13,24 +13,30 @@ class NextLiftAppShell extends ConsumerStatefulWidget {
 }
 
 class _NextLiftAppShellState extends ConsumerState<NextLiftAppShell> {
-  bool _hasCompletedOnboarding = false;
-
   @override
   Widget build(BuildContext context) {
     final theme = ref.watch(materialThemeProvider);
+    final hydration = ref.watch(themeControllerHydrationProvider);
+    final settings = ref.watch(userSettingsProvider);
+
+    final home = hydration.when<Widget>(
+      data: (_) => settings.onboardingCompleted
+          ? const HomeScreen()
+          : OnboardingFlowScreen(
+              onComplete: () {},
+            ),
+      loading: () => const Scaffold(
+        body: Center(child: CircularProgressIndicator()),
+      ),
+      error: (error, stackTrace) => const Scaffold(
+        body: Center(child: Text("Failed to load settings")),
+      ),
+    );
 
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       theme: theme,
-      home: _hasCompletedOnboarding
-          ? const HomeScreen()
-          : OnboardingFlowScreen(
-              onComplete: () {
-                setState(() {
-                  _hasCompletedOnboarding = true;
-                });
-              },
-            ),
+      home: home,
     );
   }
 }
