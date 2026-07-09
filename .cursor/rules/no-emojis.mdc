@@ -1,0 +1,19 @@
+---
+description: Prohibit emoji usage throughout project work
+alwaysApply: true
+---
+
+# No Emojis
+
+Do not use emojis of any kind, ever.
+
+This applies to:
+- Product copy
+- Code comments
+- Documentation
+- Test fixtures
+- Commit messages
+- PR titles and descriptions
+- Chat responses
+
+Use plain text labels, icons from the platform UI, or descriptive words instead.
