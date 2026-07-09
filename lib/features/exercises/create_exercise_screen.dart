@@ -1,3 +1,5 @@
+import "dart:math";
+
 import "package:flutter/material.dart";
 import "package:flutter_riverpod/flutter_riverpod.dart";
 
@@ -7,6 +9,12 @@ import "../../core/design_system/widgets/primary_action_button.dart";
 import "../../core/exercises/exercise_providers.dart";
 import "../../core/exercises/models/exercise_template.dart";
 import "../../core/exercises/repositories/exercise_template_repository.dart";
+
+class ExerciseDeletedResult {
+  const ExerciseDeletedResult({required this.name});
+
+  final String name;
+}
 
 class CreateExerciseScreen extends ConsumerStatefulWidget {
   const CreateExerciseScreen({super.key, this.template});
@@ -110,6 +118,16 @@ class _CreateExerciseScreenState extends ConsumerState<CreateExerciseScreen> {
                 onPressed: _isSaving ? null : _save,
                 isLoading: _isSaving,
               ),
+              if (_isEditing) ...[
+                const SizedBox(height: 14),
+                TextButton(
+                  onPressed: _isSaving ? null : _confirmDelete,
+                  style: TextButton.styleFrom(
+                    foregroundColor: Theme.of(context).colorScheme.error,
+                  ),
+                  child: const Text("Delete Exercise"),
+                ),
+              ],
             ],
           ),
         ),
@@ -151,7 +169,7 @@ class _CreateExerciseScreenState extends ConsumerState<CreateExerciseScreen> {
     final name = _nameController.text.trim();
     final existingTemplate = widget.template;
     final template = ExerciseTemplate(
-      id: existingTemplate?.id ?? "exercise_${now.microsecondsSinceEpoch}",
+      id: existingTemplate?.id ?? _createExerciseId(),
       name: name,
       normalizedName: normalizeExerciseTemplateName(name),
       metricKeys: _selectedMetricKeys.toList(),
@@ -192,6 +210,79 @@ class _CreateExerciseScreenState extends ConsumerState<CreateExerciseScreen> {
       }
     }
   }
+
+  Future<void> _confirmDelete() async {
+    final template = widget.template;
+    if (template == null) {
+      return;
+    }
+
+    final shouldDelete = await showDialog<bool>(
+      context: context,
+      builder: (dialogContext) {
+        return AlertDialog(
+          title: const Text("Delete Exercise?"),
+          content: const Text(
+            "Deleting this exercise removes it from your library. Further tracking for this exercise will cease.",
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(dialogContext).pop(false),
+              child: const Text("Cancel"),
+            ),
+            TextButton(
+              onPressed: () => Navigator.of(dialogContext).pop(true),
+              style: TextButton.styleFrom(
+                foregroundColor: Theme.of(context).colorScheme.error,
+              ),
+              child: const Text("Delete"),
+            ),
+          ],
+        );
+      },
+    );
+
+    if (shouldDelete != true) {
+      return;
+    }
+
+    try {
+      await ref
+          .read(exerciseTemplateRepositoryProvider)
+          .deleteTemplate(template.id);
+      ref.invalidate(exerciseTemplatesProvider);
+      if (!mounted) {
+        return;
+      }
+      Navigator.of(context).pop(ExerciseDeletedResult(name: template.name));
+    } catch (_) {
+      if (!mounted) {
+        return;
+      }
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text("Couldn't delete exercise. Try again."),
+        ),
+      );
+    }
+  }
+}
+
+String _createExerciseId() {
+  final random = Random.secure();
+  final bytes = List<int>.generate(16, (_) => random.nextInt(256));
+  bytes[6] = (bytes[6] & 0x0f) | 0x40;
+  bytes[8] = (bytes[8] & 0x3f) | 0x80;
+
+  String twoHex(int value) => value.toRadixString(16).padLeft(2, "0");
+  final hex = bytes.map(twoHex).join();
+  return [
+    hex.substring(0, 8),
+    hex.substring(8, 12),
+    hex.substring(12, 16),
+    hex.substring(16, 20),
+    hex.substring(20),
+  ].join("-");
 }
 
 Set<ExerciseMetricKey> _conflictingMetricKeysFor(ExerciseMetricKey key) {

@@ -85,17 +85,27 @@ class ExerciseLibraryScreen extends ConsumerWidget {
     WidgetRef ref,
     ExerciseTemplate template,
   ) async {
-    final updated = await Navigator.of(context).push<ExerciseTemplate>(
+    final result = await Navigator.of(context).push<Object?>(
       MaterialPageRoute(
         builder: (_) => CreateExerciseScreen(template: template),
       ),
     );
-    if (updated == null || !context.mounted) {
+    if (result == null || !context.mounted) {
       return;
     }
     ref.invalidate(exerciseTemplatesProvider);
+    if (result is ExerciseDeletedResult) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("${result.name} deleted.")),
+      );
+      return;
+    }
+
+    if (result is! ExerciseTemplate) {
+      return;
+    }
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text("${updated.name} updated.")),
+      SnackBar(content: Text("${result.name} updated.")),
     );
   }
 }
