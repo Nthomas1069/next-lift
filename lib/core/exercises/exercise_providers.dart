@@ -1,12 +1,15 @@
 import "package:flutter_riverpod/flutter_riverpod.dart";
 
+import "../storage/database_providers.dart";
 import "models/exercise_template.dart";
+import "repositories/drift_exercise_template_repository.dart";
 import "repositories/exercise_template_repository.dart";
-import "repositories/shared_prefs_exercise_template_repository.dart";
 
 final exerciseTemplateRepositoryProvider =
     Provider<ExerciseTemplateRepository>((ref) {
-  return SharedPrefsExerciseTemplateRepository();
+  return DriftExerciseTemplateRepository(
+    database: ref.watch(appDatabaseProvider),
+  );
 });
 
 final exerciseTemplatesProvider =

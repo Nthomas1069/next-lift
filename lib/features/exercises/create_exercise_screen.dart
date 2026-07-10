@@ -255,6 +255,17 @@ class _CreateExerciseScreenState extends ConsumerState<CreateExerciseScreen> {
         return;
       }
       Navigator.of(context).pop(ExerciseDeletedResult(name: template.name));
+    } on ExerciseTemplateInUseException {
+      if (!mounted) {
+        return;
+      }
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text(
+            "This exercise is used by a workout. Replace it there before deleting.",
+          ),
+        ),
+      );
     } catch (_) {
       if (!mounted) {
         return;

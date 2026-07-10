@@ -9,6 +9,7 @@ import 'package:permission_handler/permission_handler.dart';
 
 import '../../core/design_system/theme/theme_providers.dart';
 import '../../core/design_system/tokens/app_theme_tokens.dart';
+import '../../core/design_system/widgets/primary_action_button.dart';
 import '../../core/settings/user_settings.dart';
 import 'models/onboarding_step.dart';
 import 'widgets/onboarding_step_card.dart';
@@ -22,7 +23,8 @@ class OnboardingFlowScreen extends ConsumerStatefulWidget {
   final VoidCallback onComplete;
 
   @override
-  ConsumerState<OnboardingFlowScreen> createState() => _OnboardingFlowScreenState();
+  ConsumerState<OnboardingFlowScreen> createState() =>
+      _OnboardingFlowScreenState();
 }
 
 class _OnboardingFlowScreenState extends ConsumerState<OnboardingFlowScreen>
@@ -83,14 +85,15 @@ class _OnboardingFlowScreenState extends ConsumerState<OnboardingFlowScreen>
   Widget build(BuildContext context) {
     final tokens = ref.watch(appThemeTokensProvider);
     final steps = _buildSteps(tokens);
-    final profileNameStepIndex = steps.indexWhere((step) => step.id == 'profile_name');
+    final profileNameStepIndex =
+        steps.indexWhere((step) => step.id == 'profile_name');
     final hasAdvancedPastProfileNameStep =
         profileNameStepIndex != -1 && _index > profileNameStepIndex;
     final trimmedProfileName = _draft.profileName.trim();
     final appBarTitle =
         hasAdvancedPastProfileNameStep && trimmedProfileName.isNotEmpty
-        ? 'Welcome, $trimmedProfileName'
-        : 'Welcome';
+            ? 'Welcome, $trimmedProfileName'
+            : 'Welcome';
     final isLast = _index == steps.length - 1;
     final canProceed = !_isNavigating && (_stepReady[_index] ?? false);
     final previousEnabled = _index > 0 && !_isNavigating;
@@ -369,7 +372,9 @@ class _OnboardingFlowScreenState extends ConsumerState<OnboardingFlowScreen>
                   showSelectedIcon: false,
                   multiSelectionEnabled: false,
                   segments: const [
-                    ButtonSegment(value: WeighInReminderCadence.off, label: Text('Never')),
+                    ButtonSegment(
+                        value: WeighInReminderCadence.off,
+                        label: Text('Never')),
                     ButtonSegment(
                       value: WeighInReminderCadence.daily,
                       label: Text('Daily'),
@@ -396,9 +401,11 @@ class _OnboardingFlowScreenState extends ConsumerState<OnboardingFlowScreen>
                 const SizedBox(height: 10),
                 Text(
                   _reminderDescription(_draft.weighInReminderCadence),
-                  style: TextStyle(color: tokens.semantic.text.muted, height: 1.35),
+                  style: TextStyle(
+                      color: tokens.semantic.text.muted, height: 1.35),
                 ),
-                if (_draft.weighInReminderCadence != WeighInReminderCadence.off) ...[
+                if (_draft.weighInReminderCadence !=
+                    WeighInReminderCadence.off) ...[
                   const SizedBox(height: 10),
                   Align(
                     alignment: Alignment.centerLeft,
@@ -428,7 +435,8 @@ class _OnboardingFlowScreenState extends ConsumerState<OnboardingFlowScreen>
                     ),
                   ),
                 ],
-                if (_draft.weighInReminderCadence == WeighInReminderCadence.weekly) ...[
+                if (_draft.weighInReminderCadence ==
+                    WeighInReminderCadence.weekly) ...[
                   const SizedBox(height: 10),
                   Align(
                     alignment: Alignment.centerLeft,
@@ -453,7 +461,8 @@ class _OnboardingFlowScreenState extends ConsumerState<OnboardingFlowScreen>
                     ),
                   ),
                 ],
-                if (_draft.weighInReminderCadence == WeighInReminderCadence.monthly) ...[
+                if (_draft.weighInReminderCadence ==
+                    WeighInReminderCadence.monthly) ...[
                   const SizedBox(height: 10),
                   Align(
                     alignment: Alignment.centerLeft,
@@ -538,7 +547,8 @@ class _OnboardingFlowScreenState extends ConsumerState<OnboardingFlowScreen>
     _stepReady[_index] = true;
   }
 
-  double _cardBandHeightFor(double availableHeight, List<OnboardingStep> steps) {
+  double _cardBandHeightFor(
+      double availableHeight, List<OnboardingStep> steps) {
     final baseHeight = availableHeight * 0.58;
     final currentStep = steps[_index];
     if (currentStep.id != 'reminder_cadence' || !_draft.weightTrackingEnabled) {
@@ -577,8 +587,8 @@ class _OnboardingFlowScreenState extends ConsumerState<OnboardingFlowScreen>
           weightTrackingEnabled: true,
           weighInReminderCadence:
               _draft.weighInReminderCadence == WeighInReminderCadence.off
-              ? WeighInReminderCadence.daily
-              : _draft.weighInReminderCadence,
+                  ? WeighInReminderCadence.daily
+                  : _draft.weighInReminderCadence,
         );
         _markCurrentStepConfirmed();
       });
@@ -600,8 +610,8 @@ class _OnboardingFlowScreenState extends ConsumerState<OnboardingFlowScreen>
         weightTrackingEnabled: granted,
         weighInReminderCadence: granted
             ? (_draft.weighInReminderCadence == WeighInReminderCadence.off
-                  ? WeighInReminderCadence.daily
-                  : _draft.weighInReminderCadence)
+                ? WeighInReminderCadence.daily
+                : _draft.weighInReminderCadence)
             : WeighInReminderCadence.off,
       );
       _markCurrentStepConfirmed();
@@ -642,10 +652,9 @@ class _OnboardingFlowScreenState extends ConsumerState<OnboardingFlowScreen>
         'You will be sent a notification to weigh-in every day at ${_formatReminderTime(context)}.',
       WeighInReminderCadence.weekly =>
         'You will be sent a notification to weigh-in every ${_weekdayLabel(_draft.weighInReminderWeekday)} at ${_formatReminderTime(context)}.',
-      WeighInReminderCadence.monthly =>
-        _draft.weighInReminderMonthDay == 0
-        ? 'You will be sent a notification to weigh-in on the last day of every month at ${_formatReminderTime(context)}.'
-        : 'You will be sent a notification to weigh-in on the ${_ordinal(_draft.weighInReminderMonthDay)} day of every month at ${_formatReminderTime(context)}.',
+      WeighInReminderCadence.monthly => _draft.weighInReminderMonthDay == 0
+          ? 'You will be sent a notification to weigh-in on the last day of every month at ${_formatReminderTime(context)}.'
+          : 'You will be sent a notification to weigh-in on the ${_ordinal(_draft.weighInReminderMonthDay)} day of every month at ${_formatReminderTime(context)}.',
     };
   }
 
@@ -992,7 +1001,8 @@ class _CassetteDeck extends StatelessWidget {
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
                     border: Border.all(
-                      color: tokens.foundation.borderStrong.withValues(alpha: 0.38),
+                      color: tokens.foundation.borderStrong
+                          .withValues(alpha: 0.38),
                       width: 1.1,
                     ),
                   ),
@@ -1003,8 +1013,8 @@ class _CassetteDeck extends StatelessWidget {
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
                         border: Border.all(
-                          color:
-                              tokens.foundation.accentPrimary.withValues(alpha: 0.22),
+                          color: tokens.foundation.accentPrimary
+                              .withValues(alpha: 0.22),
                           width: 1,
                         ),
                       ),
@@ -1157,7 +1167,8 @@ class _CardPose extends StatelessWidget {
             ),
             child: OnboardingStepCard(
               type: switch (step.type) {
-                OnboardingStepType.explanation => OnboardingCardType.explanation,
+                OnboardingStepType.explanation =>
+                  OnboardingCardType.explanation,
                 OnboardingStepType.preference => OnboardingCardType.preference,
               },
               title: step.title,
@@ -1228,15 +1239,15 @@ class _BorderedNavButton extends StatelessWidget {
   Widget build(BuildContext context) {
     final borderColor = isPrimary
         ? (enabled
-              ? tokens.foundation.accentPrimary.withValues(alpha: 0.9)
-              : tokens.foundation.accentPrimary.withValues(alpha: 0.35))
+            ? tokens.foundation.accentPrimary.withValues(alpha: 0.9)
+            : tokens.foundation.accentPrimary.withValues(alpha: 0.35))
         : (enabled
-              ? tokens.foundation.borderStrong
-              : tokens.foundation.borderSubtle.withValues(alpha: 0.6));
+            ? tokens.foundation.borderStrong
+            : tokens.foundation.borderSubtle.withValues(alpha: 0.6));
     final textColor = enabled
         ? (isPrimary
-              ? tokens.semantic.text.primary
-              : tokens.semantic.text.primary.withValues(alpha: 0.9))
+            ? tokens.semantic.text.primary
+            : tokens.semantic.text.primary.withValues(alpha: 0.9))
         : tokens.semantic.text.disabled;
 
     return Container(
@@ -1278,7 +1289,7 @@ class _BorderedNavButton extends StatelessWidget {
               top: -8,
               bottom: -8,
               child: IgnorePointer(
-                child: _CometOrbit(
+                child: CometOrbit(
                   color: Colors.white,
                   borderRadius: 12,
                   bleed: 8,
@@ -1287,199 +1298,6 @@ class _BorderedNavButton extends StatelessWidget {
             ),
         ],
       ),
-    );
-  }
-}
-
-class _CometOrbit extends StatefulWidget {
-  const _CometOrbit({
-    required this.color,
-    required this.borderRadius,
-    required this.bleed,
-  });
-
-  final Color color;
-  final double borderRadius;
-  final double bleed;
-
-  @override
-  State<_CometOrbit> createState() => _CometOrbitState();
-}
-
-class _CometOrbitState extends State<_CometOrbit>
-    with SingleTickerProviderStateMixin {
-  late final AnimationController _controller;
-
-  @override
-  void initState() {
-    super.initState();
-    _controller = AnimationController(
-      vsync: this,
-      duration: const Duration(milliseconds: 1800),
-    )..repeat();
-  }
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        final size = Size(constraints.maxWidth, constraints.maxHeight);
-        return AnimatedBuilder(
-          animation: _controller,
-          builder: (context, _) {
-            final p = _controller.value;
-            final point = _pointAlongRoundedRect(
-              size,
-              p,
-              widget.borderRadius,
-              widget.bleed,
-            );
-            final trailPoints = List<Offset>.generate(5, (i) {
-              final d = (p - ((i + 1) * 0.022)) % 1;
-              return _pointAlongRoundedRect(
-                size,
-                d < 0 ? d + 1 : d,
-                widget.borderRadius,
-                widget.bleed,
-              );
-            });
-
-            return Stack(
-              children: [
-                for (var i = 0; i < trailPoints.length; i++)
-                  Positioned(
-                    left: trailPoints[i].dx - (2.4 - (i * 0.3)),
-                    top: trailPoints[i].dy - (2.4 - (i * 0.3)),
-                    child: Container(
-                      width: 4.8 - (i * 0.6),
-                      height: 4.8 - (i * 0.6),
-                      decoration: BoxDecoration(
-                        color: widget.color.withValues(
-                          alpha: 0.38 - (i * 0.06),
-                        ),
-                        shape: BoxShape.circle,
-                      ),
-                    ),
-                  ),
-                Positioned(
-                  left: point.dx - 3,
-                  top: point.dy - 3,
-                  child: Container(
-                    width: 6,
-                    height: 6,
-                    decoration: BoxDecoration(
-                      color: widget.color,
-                      shape: BoxShape.circle,
-                      boxShadow: [
-                        BoxShadow(
-                          color: widget.color.withValues(alpha: 0.6),
-                          blurRadius: 8,
-                          spreadRadius: 1,
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ],
-            );
-          },
-        );
-      },
-    );
-  }
-
-  Offset _pointAlongRoundedRect(
-    Size size,
-    double t,
-    double radius,
-    double bleed,
-  ) {
-    final left = bleed;
-    final top = bleed;
-    final right = size.width - bleed;
-    final bottom = size.height - bleed;
-    final width = (right - left).clamp(1.0, double.infinity);
-    final height = (bottom - top).clamp(1.0, double.infinity);
-    final r = radius.clamp(0.0, width / 2).clamp(0.0, height / 2);
-
-    final straightTop = width - (2 * r);
-    final straightRight = height - (2 * r);
-    final straightBottom = straightTop;
-    final straightLeft = straightRight;
-    final arc = (pi / 2) * r;
-    final perimeter = straightTop +
-        straightRight +
-        straightBottom +
-        straightLeft +
-        (arc * 4);
-
-    var d = (t % 1) * perimeter;
-
-    // Top edge.
-    if (d <= straightTop) {
-      return Offset(left + r + d, top);
-    }
-    d -= straightTop;
-
-    // Top-right arc.
-    if (d <= arc) {
-      final theta = -pi / 2 + (d / r);
-      return Offset(
-        right - r + (r * cos(theta)),
-        top + r + (r * sin(theta)),
-      );
-    }
-    d -= arc;
-
-    // Right edge.
-    if (d <= straightRight) {
-      return Offset(right, top + r + d);
-    }
-    d -= straightRight;
-
-    // Bottom-right arc.
-    if (d <= arc) {
-      final theta = d / r;
-      return Offset(
-        right - r + (r * cos(theta)),
-        bottom - r + (r * sin(theta)),
-      );
-    }
-    d -= arc;
-
-    // Bottom edge.
-    if (d <= straightBottom) {
-      return Offset(right - r - d, bottom);
-    }
-    d -= straightBottom;
-
-    // Bottom-left arc.
-    if (d <= arc) {
-      final theta = pi / 2 + (d / r);
-      return Offset(
-        left + r + (r * cos(theta)),
-        bottom - r + (r * sin(theta)),
-      );
-    }
-    d -= arc;
-
-    // Left edge.
-    if (d <= straightLeft) {
-      return Offset(left, bottom - r - d);
-    }
-    d -= straightLeft;
-
-    // Top-left arc.
-    final theta = pi + (d / r);
-    return Offset(
-      left + r + (r * cos(theta)),
-      top + r + (r * sin(theta)),
     );
   }
 }

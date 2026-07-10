@@ -11,3 +11,9 @@ class DuplicateExerciseTemplateNameException implements Exception {
 
   final String name;
 }
+
+class ExerciseTemplateInUseException implements Exception {
+  const ExerciseTemplateInUseException(this.name);
+
+  final String name;
+}

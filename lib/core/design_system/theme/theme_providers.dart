@@ -24,7 +24,8 @@ final themeControllerHydrationProvider = FutureProvider<void>((ref) async {
 final appThemeIdProvider = Provider<AppThemeId>((ref) {
   // Ensure async hydrate is started.
   ref.watch(themeControllerHydrationProvider);
-  return ref.watch(themeControllerProvider.select((controller) => controller.value));
+  return ref
+      .watch(themeControllerProvider.select((controller) => controller.value));
 });
 
 final appThemeTokensProvider = Provider<AppThemeTokens>((ref) {

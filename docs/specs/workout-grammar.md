@@ -10,6 +10,9 @@ This document is governed by final V1 decision overrides in `docs/specs/decision
 - `SetElement`: exercise-linked executable set configuration.
 - `WorkoutFlow`: ordered list of top-level shapes.
 - `Composite`: nested composition of primitive shapes.
+- `SpatialCanvas`: navigable rendering of the deterministic flow.
+- The stored flow is semantic; screen coordinates and viewport transforms are derived.
+- A workout has one canonical execution path. Shape geometry may branch visually, but traversal always resolves to one next set.
 
 ## 3. Primitive Shapes
 - `straight_set`
@@ -21,6 +24,8 @@ This document is governed by final V1 decision overrides in `docs/specs/decision
 
 ## 4. Meta Shape
 - `composite`: contains one or more primitive or composite children.
+- Product label: `Combination`.
+- Combination children form a bounded deterministic subflow and may themselves be combinations.
 
 ## 5. Shape Minimum Validity
 Each shape must satisfy:
@@ -116,3 +121,48 @@ When a drag ends, resolution order:
 
 ## 13. Deterministic Output Requirement
 Given identical drag source, drop target, and current workout state, grammar transformation output must always be identical.
+
+## 14. Spatial Builder Contract
+
+### 14.1 Shape Rail
+- Builder exposes a right-side rail that is collapsible to icons and expandable to icon + label.
+- Rail order is fixed: `straight_set`, `super_set`, `circuit`, `drop_set`, `pyramid(up)`, `pyramid(down)`, `intervals`, `composite`.
+- Shape icons use a shared dot-and-dash visual grammar and include semantic accessibility labels.
+
+### 14.2 Palette Drop
+- The first palette drop targets the canvas origin and creates a provisional shape.
+- Later top-level drops append to the current chain tail.
+- Drops inside a Combination append to that bounded child flow.
+- A provisional shape does not become durable until its configurator is confirmed.
+- Cancel or invalid configuration removes the provisional shape without mutating the flow.
+
+### 14.3 Shape Configuration
+- Exercise fields are determined by the selected exercise template's tracked metrics.
+- `straight_set`, `drop_set`, `pyramid`, and `intervals` begin with one exercise-linked set; a shape-local plus appends set instances.
+- `super_set` begins with two exercises. Sets render as an alternating offset weave; its plus appends a paired pass.
+- `circuit` adds exercises around a ring in traversal order. Adding an exercise extends the ring.
+- `composite` is configured by dropping child shapes into its bounded subsection.
+- Every exercise reference is live. Renames and metric edits are reflected in workouts immediately.
+- Exercise deletion is rejected while any workout references it.
+
+### 14.4 Spatial Layout
+- Layout is generated deterministically from shape type, hierarchy, and order.
+- Persisted flow data must not contain device-specific canvas coordinates.
+- Builder and preview use the same layout engine.
+- Pan and zoom transforms are ephemeral and are not part of workout identity.
+
+### 14.5 Shared Renderer Modes
+- `builder`: palette drops, contextual additions, editing, pan, and zoom enabled.
+- `preview`: read-only pan and zoom enabled.
+- `execution`: structural editing guarded by runtime rules; active set is centered and focused.
+- All modes preserve identical node geometry and traversal order.
+
+### 14.6 Canonical Shape Geometry
+- `straight_set`: parallel horizontal dashes with terminal dots.
+- `super_set`: alternating offset rows that visually weave two exercises.
+- `circuit`: exercise nodes arranged around a circular path.
+- `drop_set`: right-aligned rows decreasing in length.
+- `pyramid(up)`: centered rows increasing in length.
+- `pyramid(down)`: centered rows decreasing in length.
+- `intervals`: separated rows with a centered interval marker.
+- `composite`: bounded subsection containing child shape geometry.

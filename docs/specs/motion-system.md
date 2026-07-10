@@ -43,9 +43,13 @@ Define a consistent animation language that improves orientation, confidence, an
 ## 6. Interaction Motion Catalog
 
 ### 6.1 Builder Interactions
+- Drag shape from rail:
+  - Drag proxy preserves the selected dot-and-dash icon.
+  - Valid canvas target expands and pre-highlights with `motion.sm`.
+  - Confirmed shape resolves from proxy to semantic geometry with `motion.lg`.
 - Add shape:
-  - New shape slides in from below and settles with `motion.md`.
-  - Global plus button shifts to next append position.
+  - New geometry settles into the generated flow layout with `motion.md`.
+  - Chain-tail drop target shifts to the next append position.
 - Drag over valid drop zone:
   - Target pre-highlights with subtle expansion (`motion.sm`).
 - Successful series insert:
@@ -59,6 +63,8 @@ Define a consistent animation language that improves orientation, confidence, an
 - Activate set:
   - Elevation rise + border emphasis (`motion.sm`).
   - Orbit indicator starts with phase-in (`motion.sm`).
+  - Canvas animates the active set to viewport center with `motion.lg`.
+  - Neighbor depth is conveyed with bounded scale, opacity, and shadow changes.
 - Complete set:
   - Active visuals collapse into completed style (`motion.sm`).
   - If rest enabled, global rest module enters (`motion.md`).
@@ -94,6 +100,7 @@ All cues are user-configurable and can be independently disabled.
 ## 9. Reduced Motion Mode
 - Disable orbit animation; keep static active indicator.
 - Replace structural morphs with crossfade + subtle scale.
+- Center active sets without parallax or depth translation.
 - Preserve color/elevation differences for state communication.
 
 ## 10. Performance Guardrails
@@ -101,6 +108,18 @@ All cues are user-configurable and can be independently disabled.
 - Avoid rebuilding entire list/tree for single-set state changes.
 - Keep animation layers clipped and bounded.
 - Use implicit animations for simple property changes; explicit controllers only for advanced timelines.
+- Cache semantic layout while flow structure is unchanged.
+- Repaint connectors independently from node widgets.
+- Do not use a real 3D scene; depth is a controlled 2D visual treatment.
+
+## 12. Spatial Focus Contract
+- Builder, preview, and execution share one canvas renderer and layout engine.
+- Canvas supports bounded pan and zoom through a transformation controller.
+- Focus requests identify a set node by stable ID.
+- Focus transition centers that node while preserving enough surrounding structure for orientation.
+- Only the active set receives the comet orbit.
+- Ready nodes remain full contrast; completed nodes recede.
+- Focus motion never changes persisted workout structure or traversal.
 
 ## 11. Motion QA Checklist
 - State changes are visually unambiguous in under 300ms.

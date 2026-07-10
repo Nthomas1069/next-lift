@@ -58,7 +58,8 @@ Color chartPointColor({
   return palette[idx];
 }
 
-ChartSeriesPalette _seriesPalette(AppThemeTokens tokens, ChartPaletteMode mode) {
+ChartSeriesPalette _seriesPalette(
+    AppThemeTokens tokens, ChartPaletteMode mode) {
   switch (mode) {
     case ChartPaletteMode.vivid:
       return tokens.chart.palettes.vivid;

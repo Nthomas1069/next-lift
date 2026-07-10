@@ -13,7 +13,8 @@ class ProfileSettingsScreen extends ConsumerStatefulWidget {
   const ProfileSettingsScreen({super.key});
 
   @override
-  ConsumerState<ProfileSettingsScreen> createState() => _ProfileSettingsScreenState();
+  ConsumerState<ProfileSettingsScreen> createState() =>
+      _ProfileSettingsScreenState();
 }
 
 class _ProfileSettingsScreenState extends ConsumerState<ProfileSettingsScreen> {
@@ -147,7 +148,8 @@ class _ProfileSettingsScreenState extends ConsumerState<ProfileSettingsScreen> {
                         ],
                         selected: {_draft.weightUnit},
                         onSelectionChanged: (selection) async {
-                          await _save(_draft.copyWith(weightUnit: selection.first));
+                          await _save(
+                              _draft.copyWith(weightUnit: selection.first));
                         },
                       ),
                     );
@@ -190,7 +192,8 @@ class _ProfileSettingsScreenState extends ConsumerState<ProfileSettingsScreen> {
                         ],
                         selected: {_draft.distanceUnit},
                         onSelectionChanged: (selection) async {
-                          await _save(_draft.copyWith(distanceUnit: selection.first));
+                          await _save(
+                              _draft.copyWith(distanceUnit: selection.first));
                         },
                       ),
                     );
@@ -264,16 +267,19 @@ class _ProfileSettingsScreenState extends ConsumerState<ProfileSettingsScreen> {
                     selected: {_draft.weighInReminderCadence},
                     onSelectionChanged: (selection) async {
                       await _save(
-                        _draft.copyWith(weighInReminderCadence: selection.first),
+                        _draft.copyWith(
+                            weighInReminderCadence: selection.first),
                       );
                     },
                   ),
                   const SizedBox(height: 8),
                   Text(
                     _reminderDescription(_draft.weighInReminderCadence),
-                    style: TextStyle(color: tokens.semantic.text.muted, height: 1.35),
+                    style: TextStyle(
+                        color: tokens.semantic.text.muted, height: 1.35),
                   ),
-                  if (_draft.weighInReminderCadence != WeighInReminderCadence.off) ...[
+                  if (_draft.weighInReminderCadence !=
+                      WeighInReminderCadence.off) ...[
                     const SizedBox(height: 8),
                     Align(
                       alignment: Alignment.centerLeft,
@@ -300,7 +306,8 @@ class _ProfileSettingsScreenState extends ConsumerState<ProfileSettingsScreen> {
                       ),
                     ),
                   ],
-                  if (_draft.weighInReminderCadence == WeighInReminderCadence.weekly) ...[
+                  if (_draft.weighInReminderCadence ==
+                      WeighInReminderCadence.weekly) ...[
                     const SizedBox(height: 8),
                     Align(
                       alignment: Alignment.centerLeft,
@@ -322,7 +329,8 @@ class _ProfileSettingsScreenState extends ConsumerState<ProfileSettingsScreen> {
                       ),
                     ),
                   ],
-                  if (_draft.weighInReminderCadence == WeighInReminderCadence.monthly) ...[
+                  if (_draft.weighInReminderCadence ==
+                      WeighInReminderCadence.monthly) ...[
                     const SizedBox(height: 8),
                     Align(
                       alignment: Alignment.centerLeft,
@@ -334,7 +342,8 @@ class _ProfileSettingsScreenState extends ConsumerState<ProfileSettingsScreen> {
                           if (day == null) {
                             return;
                           }
-                          await _save(_draft.copyWith(weighInReminderMonthDay: day));
+                          await _save(
+                              _draft.copyWith(weighInReminderMonthDay: day));
                         },
                         child: Text(
                           "Day of month: ${_monthDayLabel(_draft.weighInReminderMonthDay)}",
@@ -419,8 +428,8 @@ class _ProfileSettingsScreenState extends ConsumerState<ProfileSettingsScreen> {
           weightTrackingEnabled: true,
           weighInReminderCadence:
               _draft.weighInReminderCadence == WeighInReminderCadence.off
-              ? WeighInReminderCadence.daily
-              : _draft.weighInReminderCadence,
+                  ? WeighInReminderCadence.daily
+                  : _draft.weighInReminderCadence,
         ),
       );
       return;
@@ -444,8 +453,8 @@ class _ProfileSettingsScreenState extends ConsumerState<ProfileSettingsScreen> {
         weightTrackingEnabled: granted,
         weighInReminderCadence: granted
             ? (_draft.weighInReminderCadence == WeighInReminderCadence.off
-                  ? WeighInReminderCadence.daily
-                  : _draft.weighInReminderCadence)
+                ? WeighInReminderCadence.daily
+                : _draft.weighInReminderCadence)
             : WeighInReminderCadence.off,
       ),
     );
@@ -475,10 +484,9 @@ class _ProfileSettingsScreenState extends ConsumerState<ProfileSettingsScreen> {
         "You will be sent a notification to weigh-in every day at ${_formatReminderTime(context)}.",
       WeighInReminderCadence.weekly =>
         "You will be sent a notification to weigh-in every ${_weekdayLabel(_draft.weighInReminderWeekday)} at ${_formatReminderTime(context)}.",
-      WeighInReminderCadence.monthly =>
-        _draft.weighInReminderMonthDay == 0
-            ? "You will be sent a notification to weigh-in on the last day of every month at ${_formatReminderTime(context)}."
-            : "You will be sent a notification to weigh-in on the ${_ordinal(_draft.weighInReminderMonthDay)} day of every month at ${_formatReminderTime(context)}.",
+      WeighInReminderCadence.monthly => _draft.weighInReminderMonthDay == 0
+          ? "You will be sent a notification to weigh-in on the last day of every month at ${_formatReminderTime(context)}."
+          : "You will be sent a notification to weigh-in on the ${_ordinal(_draft.weighInReminderMonthDay)} day of every month at ${_formatReminderTime(context)}.",
     };
   }
 

@@ -50,7 +50,8 @@ ThemeData buildMaterialTheme(AppThemeTokens tokens) {
       ),
       focusedBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(10),
-        borderSide: BorderSide(color: tokens.semantic.action.focusRing, width: 1.5),
+        borderSide:
+            BorderSide(color: tokens.semantic.action.focusRing, width: 1.5),
       ),
       labelStyle: TextStyle(color: tokens.semantic.text.muted),
     ),

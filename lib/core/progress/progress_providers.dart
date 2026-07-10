@@ -17,12 +17,14 @@ final exerciseMetricRepositoryProvider = Provider<ExerciseMetricRepository>((
   return SharedPrefsExerciseMetricRepository();
 });
 
-final bodyWeightEntriesProvider = FutureProvider<List<BodyWeightEntry>>((ref) async {
+final bodyWeightEntriesProvider =
+    FutureProvider<List<BodyWeightEntry>>((ref) async {
   final repository = ref.watch(bodyWeightRepositoryProvider);
   return repository.listEntries();
 });
 
-final exerciseMetricEntriesProvider = FutureProvider<List<ExerciseMetricEntry>>((
+final exerciseMetricEntriesProvider =
+    FutureProvider<List<ExerciseMetricEntry>>((
   ref,
 ) async {
   final repository = ref.watch(exerciseMetricRepositoryProvider);

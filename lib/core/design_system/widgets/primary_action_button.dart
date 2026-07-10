@@ -80,7 +80,7 @@ class PrimaryActionButton extends StatelessWidget {
               top: -8,
               bottom: -8,
               child: IgnorePointer(
-                child: _CometOrbit(
+                child: CometOrbit(
                   color: _cometColor,
                   borderRadius: _borderRadius,
                   bleed: 8,
@@ -93,8 +93,9 @@ class PrimaryActionButton extends StatelessWidget {
   }
 }
 
-class _CometOrbit extends StatefulWidget {
-  const _CometOrbit({
+class CometOrbit extends StatefulWidget {
+  const CometOrbit({
+    super.key,
     required this.color,
     required this.borderRadius,
     required this.bleed,
@@ -105,12 +106,17 @@ class _CometOrbit extends StatefulWidget {
   final double bleed;
 
   @override
-  State<_CometOrbit> createState() => _CometOrbitState();
+  State<CometOrbit> createState() => _CometOrbitState();
 }
 
-class _CometOrbitState extends State<_CometOrbit>
+class _CometOrbitState extends State<CometOrbit>
     with SingleTickerProviderStateMixin {
+  static const double _referencePerimeter = 180.53;
+  static const double _referenceDurationMicroseconds = 1800000;
+  static const double _trailSpacing = 4;
+
   late final AnimationController _controller;
+  bool _durationUpdateScheduled = false;
 
   @override
   void initState() {
@@ -139,6 +145,12 @@ class _CometOrbitState extends State<_CometOrbit>
     return LayoutBuilder(
       builder: (context, constraints) {
         final size = Size(constraints.maxWidth, constraints.maxHeight);
+        final perimeter = _roundedRectPerimeter(
+          size,
+          widget.borderRadius,
+          widget.bleed,
+        );
+        _syncDuration(perimeter);
         return AnimatedBuilder(
           animation: _controller,
           builder: (context, _) {
@@ -150,7 +162,7 @@ class _CometOrbitState extends State<_CometOrbit>
               widget.bleed,
             );
             final trailPoints = List<Offset>.generate(5, (i) {
-              final d = (p - ((i + 1) * 0.022)) % 1;
+              final d = (p - (((i + 1) * _trailSpacing) / perimeter)) % 1;
               return _pointAlongRoundedRect(
                 size,
                 d < 0 ? d + 1 : d,
@@ -187,6 +199,38 @@ class _CometOrbitState extends State<_CometOrbit>
         );
       },
     );
+  }
+
+  void _syncDuration(double perimeter) {
+    final duration = Duration(
+      microseconds: (_referenceDurationMicroseconds *
+              sqrt(perimeter / _referencePerimeter))
+          .round(),
+    );
+    if (_controller.duration == duration || _durationUpdateScheduled) {
+      return;
+    }
+    _durationUpdateScheduled = true;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _durationUpdateScheduled = false;
+      if (!mounted || _controller.duration == duration) {
+        return;
+      }
+      _controller
+        ..duration = duration
+        ..repeat();
+    });
+  }
+
+  double _roundedRectPerimeter(
+    Size size,
+    double radius,
+    double bleed,
+  ) {
+    final width = (size.width - (bleed * 2)).clamp(1.0, double.infinity);
+    final height = (size.height - (bleed * 2)).clamp(1.0, double.infinity);
+    final r = radius.clamp(0.0, width / 2).clamp(0.0, height / 2);
+    return (2 * (width - (2 * r))) + (2 * (height - (2 * r))) + (2 * pi * r);
   }
 
   Offset _pointAlongRoundedRect(

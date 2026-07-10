@@ -104,7 +104,8 @@ class UserSettings {
       ),
       weighInReminderHour: _safeHour(json["weighInReminderHour"] as int?),
       weighInReminderMinute: _safeMinute(json["weighInReminderMinute"] as int?),
-      weighInReminderWeekday: _safeWeekday(json["weighInReminderWeekday"] as int?),
+      weighInReminderWeekday:
+          _safeWeekday(json["weighInReminderWeekday"] as int?),
       weighInReminderMonthDay: _safeMonthDay(
         json["weighInReminderMonthDay"] as int?,
       ),

@@ -9,9 +9,12 @@ import "../../core/design_system/theme/theme_providers.dart";
 import "../../core/design_system/tokens/app_theme_tokens.dart";
 import "../../core/design_system/widgets/primary_action_button.dart";
 import "../../core/settings/user_settings.dart";
+import "../../core/workouts/workout_providers.dart";
 import "../exercises/create_exercise_screen.dart";
 import "../exercises/exercise_library_screen.dart";
 import "../profile/profile_settings_screen.dart";
+import "../workouts/create_workout_screen.dart";
+import "../workouts/workout_library_screen.dart";
 
 class HomeScreen extends ConsumerWidget {
   const HomeScreen({super.key});
@@ -22,6 +25,7 @@ class HomeScreen extends ConsumerWidget {
     final settings = ref.watch(userSettingsProvider);
     final bodyWeightEntries = ref.watch(bodyWeightEntriesProvider);
     final exerciseTemplates = ref.watch(exerciseTemplatesProvider);
+    final workoutTemplates = ref.watch(workoutTemplatesProvider);
     final exerciseMetricEntries = ref.watch(exerciseMetricEntriesProvider);
 
     return Scaffold(
@@ -106,16 +110,69 @@ class HomeScreen extends ConsumerWidget {
                       ],
                     );
                   }
+                  return workoutTemplates.when(
+                    data: (workouts) {
+                      if (workouts.isEmpty) {
+                        return Column(
+                          children: [
+                            const Spacer(),
+                            _WorkoutHomeCtaCard(
+                              tokens: tokens,
+                              onPressed: () => _openCreateWorkout(
+                                context,
+                                ref,
+                              ),
+                            ),
+                            const Spacer(flex: 2),
+                            PrimaryActionButton(
+                              label: "Exercises",
+                              tokens: tokens,
+                              onPressed: () => _openExerciseLibrary(context),
+                            ),
+                          ],
+                        );
+                      }
 
-                  return Column(
-                    children: [
-                      const Spacer(),
-                      PrimaryActionButton(
-                        label: "View Exercises",
-                        tokens: tokens,
-                        onPressed: () => _openExerciseLibrary(context),
-                      ),
-                    ],
+                      return Column(
+                        children: [
+                          const Spacer(),
+                          PrimaryActionButton(
+                            label: "Workouts",
+                            tokens: tokens,
+                            onPressed: () => _openWorkoutLibrary(context),
+                            cometActive: true,
+                          ),
+                          const SizedBox(height: 12),
+                          PrimaryActionButton(
+                            label: "Exercises",
+                            tokens: tokens,
+                            onPressed: () => _openExerciseLibrary(context),
+                          ),
+                        ],
+                      );
+                    },
+                    loading: () => Column(
+                      children: [
+                        const Spacer(),
+                        _DashboardCard(
+                          tokens: tokens,
+                          title: "Workouts",
+                          child: const _CardLoadingHint(),
+                        ),
+                      ],
+                    ),
+                    error: (error, stackTrace) => Column(
+                      children: [
+                        const Spacer(),
+                        _DashboardCard(
+                          tokens: tokens,
+                          title: "Workouts",
+                          child: const _CardErrorHint(
+                            message: "Couldn't load workouts.",
+                          ),
+                        ),
+                      ],
+                    ),
                   );
                 },
                 loading: () => Column(
@@ -168,6 +225,26 @@ class HomeScreen extends ConsumerWidget {
       MaterialPageRoute(
         builder: (_) => const ExerciseLibraryScreen(),
       ),
+    );
+  }
+
+  Future<void> _openCreateWorkout(BuildContext context, WidgetRef ref) async {
+    final created = await Navigator.of(context).push(
+      MaterialPageRoute(builder: (_) => const CreateWorkoutScreen()),
+    );
+    if (created == null || !context.mounted) {
+      return;
+    }
+
+    ref.invalidate(workoutTemplatesProvider);
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text("Workout template saved.")),
+    );
+  }
+
+  void _openWorkoutLibrary(BuildContext context) {
+    Navigator.of(context).push(
+      MaterialPageRoute(builder: (_) => const WorkoutLibraryScreen()),
     );
   }
 }
@@ -310,6 +387,55 @@ class _ExerciseHomeEmptyState extends StatelessWidget {
             label: "Create Your First Exercise",
             tokens: tokens,
             onPressed: onCreatePressed,
+            cometActive: true,
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _WorkoutHomeCtaCard extends StatelessWidget {
+  const _WorkoutHomeCtaCard({
+    required this.tokens,
+    required this.onPressed,
+  });
+
+  final AppThemeTokens tokens;
+  final VoidCallback onPressed;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(18),
+      decoration: BoxDecoration(
+        color: tokens.foundation.bgElev1.withValues(alpha: 0.55),
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Text(
+            "Build Your First Workout",
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              color: tokens.semantic.text.primary,
+              fontSize: 22,
+              fontWeight: FontWeight.w700,
+            ),
+          ),
+          const SizedBox(height: 6),
+          Text(
+            "Create a reusable workout template and use it as your guide in the gym.",
+            textAlign: TextAlign.center,
+            style: TextStyle(color: tokens.semantic.text.muted, height: 1.35),
+          ),
+          const SizedBox(height: 18),
+          PrimaryActionButton(
+            label: "Workouts",
+            tokens: tokens,
+            onPressed: onPressed,
             cometActive: true,
           ),
         ],

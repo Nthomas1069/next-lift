@@ -7,9 +7,10 @@ This document is governed by final V1 decision overrides in `docs/specs/decision
 
 ## 2. Storage Strategy
 - Local persistence only.
-- Database: Isar.
+- Database: SQLite through Drift.
 - Record all timestamps in UTC with local timezone offset metadata.
 - Use immutable event records for session progression and mutable summary tables for read performance.
+- Store semantic workout topology; spatial coordinates and viewport transforms are derived at runtime.
 
 ## 3. Entity Catalog
 
@@ -58,15 +59,35 @@ This document is governed by final V1 decision overrides in `docs/specs/decision
 - `displayOrder` (int)
 - `unitPreference` (optional)
 
-### 3.5 WorkoutTemplate (Optional V1.1)
-For V1, workouts are primarily ad-hoc sessions. This entity can remain optional or hidden.
+### 3.5 WorkoutTemplate
 - `id`
 - `name`
-- `rootFlowNodeIds`
+- `version`
+- `layoutVersion`
 - `createdAtUtc`
 - `updatedAtUtc`
 
-### 3.6 WorkoutSession
+### 3.6 WorkoutShape
+- `id`
+- `workoutTemplateId`
+- `parentShapeId` (nullable for top-level)
+- `shapeType` (`straight_set|super_set|circuit|drop_set|pyramid_up|pyramid_down|intervals|composite`)
+- `orderIndex`
+- `note` (optional)
+
+### 3.7 WorkoutShapeExercise
+- `id`
+- `shapeId`
+- `exerciseTemplateId` (live foreign key)
+- `orderIndex`
+
+### 3.8 WorkoutPlannedSet
+- `id`
+- `shapeExerciseId`
+- `orderIndex`
+- `metricDefaultsJson` (optional; keys must exist on the live exercise template)
+
+### 3.9 WorkoutSession
 - `id`
 - `name`
 - `startedAtUtc`
@@ -77,7 +98,7 @@ For V1, workouts are primarily ad-hoc sessions. This entity can remain optional 
 - `flowVersion` (int)
 - `statsDirty` (bool)
 
-### 3.7 FlowNode
+### 3.10 FlowNode
 - `id`
 - `sessionId`
 - `parentNodeId` (nullable for top-level)
@@ -89,7 +110,7 @@ For V1, workouts are primarily ad-hoc sessions. This entity can remain optional 
 - `createdAtUtc`
 - `updatedAtUtc`
 
-### 3.8 SetRecord
+### 3.11 SetRecord
 - `id`
 - `sessionId`
 - `flowNodeId` (points to set node)
@@ -100,7 +121,7 @@ For V1, workouts are primarily ad-hoc sessions. This entity can remain optional 
 - `isCompleted` (bool)
 - `completionOrdinal` (int, immutable once assigned)
 
-### 3.9 SessionEvent
+### 3.12 SessionEvent
 - `id`
 - `sessionId`
 - `eventType`
@@ -108,7 +129,7 @@ For V1, workouts are primarily ad-hoc sessions. This entity can remain optional 
 - `occurredAtUtc`
 - `sequenceNumber` (monotonic per session)
 
-### 3.10 RestInterval
+### 3.13 RestInterval
 - `id`
 - `sessionId`
 - `startedAtUtc`
@@ -118,7 +139,7 @@ For V1, workouts are primarily ad-hoc sessions. This entity can remain optional 
 - `sourceSetRecordId`
 - `status` (`running|skipped|completed`)
 
-### 3.11 DerivedStatSnapshot
+### 3.14 DerivedStatSnapshot
 - `id`
 - `sessionId`
 - `computedAtUtc`
@@ -128,7 +149,7 @@ For V1, workouts are primarily ad-hoc sessions. This entity can remain optional 
 - `completedSetCount`
 - `exerciseCount`
 
-### 3.12 DashboardRollup
+### 3.15 DashboardRollup
 Materialized rollups for fast chart reads.
 - `id`
 - `periodType` (`day|week|month`)
@@ -140,6 +161,11 @@ Materialized rollups for fast chart reads.
 - `bodyweightAvg`
 
 ## 4. Relationship Summary
+- `WorkoutTemplate` has many ordered top-level `WorkoutShape` rows.
+- `WorkoutShape(composite)` has many ordered child `WorkoutShape` rows.
+- `WorkoutShape` has many ordered `WorkoutShapeExercise` rows.
+- `WorkoutShapeExercise` has many ordered `WorkoutPlannedSet` rows.
+- `WorkoutShapeExercise.exerciseTemplateId` is a live reference; referenced exercises cannot be deleted.
 - `WorkoutSession` has many `FlowNode`.
 - `FlowNode(set)` has one `SetRecord`.
 - `WorkoutSession` has many `SessionEvent`.
@@ -177,8 +203,9 @@ Recommended indices:
 - `DashboardRollup.periodType + periodStartUtc`.
 
 ## 8. Migration Strategy
-- Include schema version in Isar.
+- Increment the Drift schema version for every structural change.
 - Use additive migrations for new metrics and node properties.
+- Import legacy SharedPreferences exercise templates into Drift once while preserving IDs.
 - Recompute `DashboardRollup` and `DerivedStatSnapshot` after breaking formula changes.
 
 ## 9. Data Retention
